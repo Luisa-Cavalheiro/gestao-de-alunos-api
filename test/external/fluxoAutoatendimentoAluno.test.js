@@ -1,7 +1,7 @@
 import { novoAluno } from '../factories/alunosFactory.js';
 import { api } from '../helpers/api.js';
 import { expect } from 'chai';
-import { comTokenDeAdmin, getToken } from '../helpers/auth.js';
+import { comTokenAluno, comTokenDeAdmin, getToken } from '../helpers/auth.js';
 import { novaDisciplina } from '../factories/disciplinasFactory.js';
 
 describe('Resgista uma entrega de trabalho', () => {
@@ -35,7 +35,7 @@ describe('Resgista uma entrega de trabalho', () => {
         const entregaTrabalhoResposta = await api()
             .post(`/api/alunos/${alunoId}/trabalhos`)
             .set('Content-Type', 'application/json')
-            .set('Authorization', await getToken(alunoEmail, alunoSenha))
+            .set('Authorization', await comTokenAluno(alunoEmail, alunoSenha))
             .send({
                 disciplinaId: disciplinaId,
                 titulo: tituloTrabalho,

@@ -19,7 +19,7 @@ export async function comTokenDeAdmin() {
     return `Bearer ${tokenEmCache}`;
 }
 
-export async function getToken(emailUser, passUser) {
+export async function comTokenAluno(emailUser, passUser) {
      if (!tokenEmCache) {
         const loginResposta = await api()
             .post('/api/auth/login')
