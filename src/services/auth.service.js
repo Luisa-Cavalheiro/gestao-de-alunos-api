@@ -15,8 +15,8 @@ export async function login({ email, senha }) {
     throw new ApiError(400, 'Os campos "email" e "senha" são obrigatórios.');
   }
 
-  const admin = db.all('administradores').find((a) => a.email === email);
-  const aluno = db.all('alunos').find((a) => a.email === email);
+  const admin = await Administrador.findOne({ email });
+  const aluno = admin ? null : await Aluno.findOne({ email });
   const usuario = admin || aluno;
 
   if (!usuario || !(await bcrypt.compare(senha, usuario.senha))) {

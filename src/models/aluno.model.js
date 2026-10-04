@@ -17,6 +17,9 @@ export async function createAluno({ nome, email, matricula, senha }) {
 
 export function sanitizeAluno(aluno) {
   if (!aluno) return aluno;
-  const { senha, ...resto } = aluno;
+  const plain = typeof aluno.toObject === 'function' ? aluno.toObject() : aluno;
+  const { senha, ...resto } = plain;
   return resto;
 }
+
+export default Aluno;
