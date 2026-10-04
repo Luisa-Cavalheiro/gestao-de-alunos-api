@@ -1,20 +1,32 @@
-import request from 'supertest';
+import { api } from '../helpers/api.js';
 import { expect } from 'chai';
-import { getToken } from '../helpers/auth.js';
+import { comTokenDeAdmin } from '../helpers/auth.js';
+import { novoAluno } from '../factories/alunosFactory.js';
 
 
-describe('Login', () => {
-    let token;
+describe('Cadastro de alunos', () => {
 
-    beforeEach(async () => {
-        token = await getToken('admin@escola.com', 'admin123');
+    it('deve cadastrar um aluno quando ele informa dados válidos', async () => {
+        const alunoEsperado = novoAluno();
+        const cadastroAlunoResposta = await api()
+            .post('/api/admin/alunos')
+            .set('Content-Type', 'application/json')
+            .set('Authorization',  await comTokenDeAdmin())
+            .send(alunoEsperado);
+
+        // Validar que ele foi cadastrado
+        expect(cadastroAlunoResposta.status).to.equal(201);
+        expect(cadastroAlunoResposta.body.nome).to.equal(alunoEsperado.nome);
+        expect(cadastroAlunoResposta.body.email).to.equal(alunoEsperado.email);
+        expect(cadastroAlunoResposta.body.matricula).to.equal(alunoEsperado.matricula);
+
     });
 
     it('deve negar o cadastro de um aluno quando ele já existe', async () => {
-        const cadastroAlunoResposta = await request('http://localhost:3000')
+        const cadastroAlunoResposta = await api()
             .post('/api/admin/alunos')
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', await comTokenDeAdmin())
             .send({
                 nome: 'Ana Souza', 
                 email: 'ana.souza@example.com', 
@@ -28,23 +40,5 @@ describe('Login', () => {
 
     });
 
-    it('deve cadastrar um aluno quando ele informa dados válidos', async () => {
-        const cadastroAlunoResposta = await request('http://localhost:3000')
-            .post('/api/admin/alunos')
-            .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${token}`)
-            .send({
-                nome: 'Julio de Lima',
-                email: 'julio.lima@example.com',
-                matricula: '2026-0001',
-                senha: '123456'
-            });
-
-        // Validar que ele foi cadastrado
-        expect(cadastroAlunoResposta.status).to.equal(201);
-        expect(cadastroAlunoResposta.body.nome).to.equal('Julio de Lima');
-        expect(cadastroAlunoResposta.body.email).to.equal('julio.lima@example.com');
-        expect(cadastroAlunoResposta.body.matricula).to.equal('2026-0001');
-
-    });
+    
 });
