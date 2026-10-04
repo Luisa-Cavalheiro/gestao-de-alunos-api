@@ -1,25 +1,25 @@
-import request from 'supertest';
+import { api } from '../helpers/api.js';
 import { expect } from 'chai';
 
-describe('Login', () => {
+describe('Login administrador', () => {
     it('deve retornar 200 quando o usuário e senha forem corretos', async () => {
-        const loginResposta = await request('http://localhost:3000')
+        const loginResposta = await api()
             .post('/api/auth/login')
             .set('Content-Type', 'application/json')
             .send({ 
-                email: 'admin@escola.com', 
-                senha: 'admin123'
+                   email: process.env.ADMIN_EMAIL, 
+                   senha: process.env.ADMIN_SENHA
             });
         
         expect(loginResposta.status).to.equal(200);
     });
 
     it('deve retornar 400 quando a senha não for informada', async () => {
-        const loginResposta = await request('http://localhost:3000')
+        const loginResposta = await api()
             .post('/api/auth/login')
             .set('Content-Type', 'application/json')
             .send({ 
-                email: 'admin@escola.com', 
+                email: process.env.ADMIN_EMAIL,
                 senha: ''
             });
         
@@ -28,11 +28,11 @@ describe('Login', () => {
     });
 
     it('deve retornar 401 quando o usuário estiver correto mas a senha for incorreta', async () => {
-        const loginResposta = await request('http://localhost:3000')
+        const loginResposta = await api()
             .post('/api/auth/login')
             .set('Content-Type', 'application/json')
             .send({ 
-                email: 'admin@escola.com', 
+                email: process.env.ADMIN_EMAIL,
                 senha: 'admin1234'
             });
         
