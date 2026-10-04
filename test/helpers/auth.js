@@ -20,13 +20,17 @@ export async function comTokenDeAdmin() {
 }
 
 export async function getToken(emailUser, passUser) {
-    const loginResposta = await api()
-        .post('/api/auth/login')
-        .set('Content-Type', 'application/json')
-        .send({ 
-            email: emailUser, 
-            senha: passUser
-        });
+     if (!tokenEmCache) {
+        const loginResposta = await api()
+            .post('/api/auth/login')
+            .set('Content-Type', 'application/json')
+            .send({ 
+                email: emailUser, 
+                senha: passUser
+         });
 
-    return loginResposta.body.token;
+   tokenEmCache = loginResposta.body.token;
+    }
+
+    return `Bearer ${tokenEmCache}`;
 }
